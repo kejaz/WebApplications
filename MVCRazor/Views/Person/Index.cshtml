@@ -1,0 +1,182 @@
+﻿@model MVCRazor.Models.Employee
+@{
+    ViewBag.Title = "GetAllPersons";
+    //Layout = null;
+ }
+<div class="container">
+    <br>
+    <a href="#" class="btn btn-info" onclick="AddNewEmployee(0)">Add New Employee</a><br /><br />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>Salary</th>
+                <th>Action(Edit)</th>
+                <th>Action(Delete)</th>
+            </tr>
+        </thead>
+        <tbody id="SetEmoloyeeList">
+            <tr id="LoadingStatus" style="color:red"></tr>
+        </tbody>
+    </table>    
+    @*Create A popup modal*@
+
+    <div class="modal fade" id="MyModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalTitle"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form">
+                        <fieldset id="SubmitForm">
+                            <div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.FirstName, new { @id = "EmpFirstName", @class = "form-control", @placeholder = "First Name" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.LastName, new { @id = "EmpLastName", @class = "form-control", @placeholder = "Last Name" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.Gender, new { @id = "EmpGender", @class = "form-control", @placeholder = "Gender" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(m => m.Salary, new { @id = "EmpSalary", @class = "form-control", @placeholder = "Salary" })
+                                </div>
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-block btn-danger" id="SaveEmployeeRecord">Save</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Create popup modal for delete*@
+    <div class="modal fade" id="DeleteConfirmation">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalTitle">Delete Employee Record</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Are you sure you want to Delete this Record.</h4>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                    <a href="#" class="btn btn-danger" onclick="ConfirmDelete()">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $("#LoadingStatus").html("Loading....");
+
+    $.get("/Person/GetAllPersons", null, DataBind);
+
+
+    function DataBind(personList)
+    {
+        var SetData = $("#SetEmoloyeeList");
+        for (var i = 0; i <= personList.length-1; i++)
+        {
+            var Data = "<tr>" +
+                "<td>" + personList[i].ID + "</td>" +
+                "<td>" + personList[i].FirstName + "</td>" +
+                "<td>" + personList[i].LastName + "</td>" +
+                "<td>" + personList[i].Gender + "</td>" +
+                "<td>" + personList[i].Salary + "</td>" +
+                "<td><a href='#' class='btn btn-info' onclick='EditEmployee(" + personList[i].ID +")'><span class='glyphicon glyphicon-edit'/></a>" + "</td>" +
+                "<td><a href='#' class='btn btn-danger' onclick='DeleteEmployee(" + personList[i].ID +")'><span class='glyphicon glyphicon-trash'/></a>" + "</td>" +
+                "</tr>";
+
+            $("#LoadingStatus").html(" ");
+            SetData.append(Data);
+           
+        }
+    }
+
+    function AddNewEmployee(EmployeeId)
+    {
+        $("#form")[0].reset();
+        $("#EmpId").val(EmployeeId);
+        $("#ModalTitle").html("Add New Employee");
+        $("#MyModal").modal();
+    }
+
+    function EditEmployee(EmployeeId) {
+        var url = "/Person/GetEmployeeById?EmployeeId=" + EmployeeId;
+        $("#ModalTitle").html("Update Employee Record");
+        $("#MyModal").modal();
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                                
+                $("#EmpId").val(data.ID);
+                $("#EmpFirstName").val(data.FirstName);
+                $("#EmpLastName").val(data.LastName);
+                $("#EmpGender").val(data.Gender);
+                $("#EmpSalary").val(data.Salary);
+            }
+        });
+    }
+
+    $('#SaveEmployeeRecord').click(function SaveEmployeeRecord() {
+        var data = $("#SubmitForm").serialize();
+        var url = "";
+        if ($("#EmpId").val() > 0) {
+            url = "/Person/UpdateEmployee";
+        }
+        else {
+            url = "/Person/AddEmployee";
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            success: function (result) {
+                alert("Success...");
+                window.location.href = "/Person/index";
+                $("#MyModal").hide();
+            },
+            error: function (error) {
+                alert("Error id" + error);
+            }
+        });
+    });
+
+    //Show the popup
+
+    function DeleteEmployee(EmployeeId)
+    {
+        $('#EmpId').val(EmployeeId);
+        $('#DeleteConfirmation').modal();
+    }
+
+    function ConfirmDelete()
+    {
+        var empId = $('#EmpId').val();
+        $.ajax({
+            type: "get",
+            url: "/Person/DeleteEmployee?EmployeeId=" + empId,
+            success: function (result) {
+                alert("Success...");
+                $('#DeleteConfirmation').hide();
+                window.location.href = "/Person/index";
+               }
+        });
+    }
+</script>
+
+

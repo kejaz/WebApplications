@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="Scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <h2>Ajax</h2>
+    <p>
+        AJAX is not a programming language.
+    </p>
+    <p>
+        AJAX is a technique for accessing web servers from a web page. Update a web page without reloading the page
+    </p>
+    <p>
+        AJAX stands for Asynchronous JavaScript And XML.
+    </p>
+        <span id="clock"></span>
+
+    <h1>The XMLHttpRequest Object</h1>
+    <div>
+        <h2 id="demo">No Data from Server</h2>
+    </div>
+    <button type="button" onclick="loadDoc()">Get Data from text file</button> <br><br />
+    <button type="button" onclick="loadDoc1()">Get Data from Controller</button>
+    <br><br>
+    <h1>JQuery Ajax Request</h1>
+    <div>
+        <h2 id="demo1">No Data from Server</h2>
+    </div>
+    <button type="button" onclick="loadDoc2()">Get Data from Controller</button><br>
+    <button type="button" onclick="loadDoc3()">Get Data from Controller 1</button><br />
+    <button type="button" onclick="loadDoc4()">Get Data from Controller 2</button>
+    <script>
+        var clockElement = document.getElementById("clock");
+        setInterval(function () {
+            updateClock(clockElement);
+        }, 1000);
+        function updateClock(clock) {
+            clock.innerHTML = new Date().toLocaleTimeString();
+        }
+        // Load Data from text file using javascript XMLHttpRequest object
+        function loadDoc() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "demo.txt", true);
+            xhttp.send();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("demo").innerHTML =
+                        this.responseText;
+                }
+            };
+        }
+        // Load Data from Controller using javascript XMLHttpRequest object
+        function loadDoc1() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/Ajax/GetData", true);
+            xhttp.send();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("demo").innerHTML =
+                        this.responseText;
+                }
+            };
+        }
+
+        // Load Data from text file using Jquery Load method
+        function loadDoc2() {
+            $("#demo1").load("ajax_info.txt");
+        }
+
+        // Load Data from Controller using JQuery.get method
+        function loadDoc3() {
+            $.get("/Ajax/GetData", function (data, status)
+            {
+                $("#demo1").text("Data: " + data + "\nStatus:" + status);
+            });
+        }
+
+        // Load Data from Controller using JQuery ajax method
+        function loadDoc4()
+        {
+            $.ajax({
+                type: "GET",
+                url: "/Ajax/GetData",
+                success: function (result) {
+                    $("#demo1").text(result);
+                },
+                error: function (error) {
+                    //$("#demo1").text(error.statusText + "<br/>" + error.responseText);
+                    alert(error.statusText + "<br/>" + error.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

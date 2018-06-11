@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+    <script src="Scripts/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#myEl").hide();
+            $("button").click(function () {
+                $("p").hide();
+                $("#myEl").show();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="myEl">
+        Hi Iam Kashif
+    </div>
+    <h2>This is a heading</h2>
+
+    <p>This is a paragraph.</p>
+    <p>This is another paragraph.</p>
+
+    <button>Click me to hide paragraphs</button>
+
+</body>
+</html>

@@ -1,0 +1,2 @@
+
+This is New a test data from ajax_info.txt file.

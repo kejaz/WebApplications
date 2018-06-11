@@ -1,0 +1,30 @@
+﻿@model MVCRazor.Models.Employee
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Employee Details</h2>
+<hr />
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(model => model.ID, "Employee ID") :  @Html.DisplayFor(model => model.ID) 
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, "First Name") :  @Html.DisplayFor(model => model.FirstName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, "First Last") :  @Html.DisplayFor(model => model.LastName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Gender, "Gender") :  @Html.DisplayFor(model => model.Gender)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Salary, "Salary") :  @Html.DisplayFor(model => model.Salary)
+    </div>
+
+</div>
+@Html.ActionLink("Back to List", "Index", "Employee")
+
+
+
+
